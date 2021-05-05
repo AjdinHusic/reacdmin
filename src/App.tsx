@@ -1,25 +1,48 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {Layout, Menu} from "antd";
+import axios from "axios";
+
+axios.defaults.baseURL = "http://localhost:5000";
 
 function App() {
+    const [databases, setDatabases] = React.useState<{Database: string}[]>([]);
+
+    React.useEffect(()=>{
+        axios.get('/database').then(r => {
+            setDatabases(r.data);
+        })
+    }, []);
+
+    console.log(databases);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Layout>
+          <Layout.Header>
+          </Layout.Header>
+          <Layout>
+              <Layout.Sider width={200}>
+                <Menu mode={"inline"}>
+                    <Menu.SubMenu title={"database"}>
+                        <Menu.Item>database</Menu.Item>
+                        <Menu.Item>queries</Menu.Item>
+                        <Menu.Item>Seeder</Menu.Item>
+                    </Menu.SubMenu>
+                    <Menu.SubMenu title={"files"}>
+
+                    </Menu.SubMenu>
+                </Menu>
+              </Layout.Sider>
+              <Layout.Content >
+                  <Menu mode={"inline"}>
+                      {
+                          databases.map(db => <Menu.Item>{db.Database}</Menu.Item>)
+                      }
+                  </Menu>
+              </Layout.Content>
+          </Layout>
+      </Layout>
+    </>
   );
 }
 
