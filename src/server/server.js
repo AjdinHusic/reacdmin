@@ -7,12 +7,6 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'ajdin',
-    password: 'root',
-})
-
 let dbConn = null;
 
 app.post('/database/connections', (req, res) => {
@@ -60,7 +54,9 @@ const server = app.listen(port, host, () => {
 process.on('SIGINT', () => {
     console.log('\nexiting gracefully.');
     console.log('cleaning up resources, and connections.');
-    db.end();
+    if (dbConn) {
+        dbConn.end();
+    }
     server.close();
     process.exit();
 })
